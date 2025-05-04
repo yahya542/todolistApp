@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert'; 
+import 'dart:convert';
 
 void main() {
   runApp(const TodoListApp());
@@ -9,7 +9,6 @@ void main() {
 class TodoListApp extends StatelessWidget {
   const TodoListApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,16 +16,13 @@ class TodoListApp extends StatelessWidget {
       title: 'Todo List',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-        // pakai Material Design 3 (lebih modern)
         textTheme: const TextTheme(
           titleLarge: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.teal,
           ),
-          bodyMedium: TextStyle(
-            fontSize: 18,
-          ),
+          bodyMedium: TextStyle(fontSize: 18),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
@@ -49,20 +45,26 @@ class TodoHomePage extends StatefulWidget {
 
 class _TodoHomePageState extends State<TodoHomePage> {
   final List<String> _todos = [];
+  final List<String> _filteredTodos = [];
+
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadTodos();
+    _searchController.addListener(_filterTodos);
   }
 
   Future<void> _loadTodos() async {
     final prefs = await SharedPreferences.getInstance();
     final String? todosString = prefs.getString('todos');
     if (todosString != null) {
+      final List<String> loaded = List<String>.from(jsonDecode(todosString));
       setState(() {
-        _todos.addAll(List<String>.from(jsonDecode(todosString)));
+        _todos.addAll(loaded);
+        _filteredTodos.addAll(loaded);
       });
     }
   }
@@ -73,33 +75,56 @@ class _TodoHomePageState extends State<TodoHomePage> {
   }
 
   void _addTodo() {
-    final text = _controller.text;
+    final text = _controller.text.trim();
     if (text.isNotEmpty) {
       setState(() {
         _todos.add(text);
         _controller.clear();
       });
       _saveTodos();
+      _filterTodos(); // update hasil pencarian
     }
   }
 
   void _removeTodo(int index) {
+    final String todoToRemove = _filteredTodos[index];
     setState(() {
-      _todos.removeAt(index);
+      _todos.remove(todoToRemove);
+      _filterTodos();
     });
     _saveTodos();
+  }
+
+  void _filterTodos() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredTodos.clear();
+      _filteredTodos.addAll(
+        _todos.where((todo) => todo.toLowerCase().contains(query)),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Daftar Tugas'),
-      ),
+      appBar: AppBar(title: const Text('Daftar Tugas')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Search Bar
+            TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                labelText: 'Cari Tugas...',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Input Tambah Tugas
             Row(
               children: [
                 Expanded(
@@ -115,17 +140,19 @@ class _TodoHomePageState extends State<TodoHomePage> {
                 ElevatedButton(
                   onPressed: _addTodo,
                   child: const Text('Tambah'),
-                )
+                ),
               ],
             ),
             const SizedBox(height: 16),
+
+            // Daftar Tugas
             Expanded(
               child: ListView.builder(
-                itemCount: _todos.length,
+                itemCount: _filteredTodos.length,
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
-                      title: Text(_todos[index]),
+                      title: Text(_filteredTodos[index]),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () => _removeTodo(index),
@@ -134,7 +161,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
