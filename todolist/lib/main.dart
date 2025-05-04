@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'component/backtrackingSearch.dart'; // Import widget pencarian
+import 'component/daftarTugas.dart';    // Impor widget daftar tugas
 
 void main() {
   runApp(const TodoListApp());
@@ -46,7 +48,6 @@ class TodoHomePage extends StatefulWidget {
 class _TodoHomePageState extends State<TodoHomePage> {
   final List<String> _todos = [];
   final List<String> _filteredTodos = [];
-
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
 
@@ -54,17 +55,16 @@ class _TodoHomePageState extends State<TodoHomePage> {
   void initState() {
     super.initState();
     _loadTodos();
-    _searchController.addListener(_filterTodos);
+    _searchController.addListener(_filterTodosWithBacktracking);
   }
 
   Future<void> _loadTodos() async {
     final prefs = await SharedPreferences.getInstance();
     final String? todosString = prefs.getString('todos');
     if (todosString != null) {
-      final List<String> loaded = List<String>.from(jsonDecode(todosString));
       setState(() {
-        _todos.addAll(loaded);
-        _filteredTodos.addAll(loaded);
+        _todos.addAll(List<String>.from(jsonDecode(todosString)));
+        _filteredTodos.addAll(_todos);
       });
     }
   }
@@ -75,14 +75,14 @@ class _TodoHomePageState extends State<TodoHomePage> {
   }
 
   void _addTodo() {
-    final text = _controller.text.trim();
+    final text = _controller.text;
     if (text.isNotEmpty) {
       setState(() {
         _todos.add(text);
         _controller.clear();
       });
       _saveTodos();
-      _filterTodos(); // update hasil pencarian
+      _filterTodosWithBacktracking();
     }
   }
 
@@ -90,18 +90,79 @@ class _TodoHomePageState extends State<TodoHomePage> {
     final String todoToRemove = _filteredTodos[index];
     setState(() {
       _todos.remove(todoToRemove);
-      _filterTodos();
     });
     _saveTodos();
+    _filterTodosWithBacktracking();
   }
 
-  void _filterTodos() {
-    final query = _searchController.text.toLowerCase();
+  void _editTodo(int index, String oldText) {
+    _controller.text = oldText; 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Tugas'),
+          content: TextField(
+            controller: _controller,
+            decoration: const InputDecoration(labelText: 'Tugas'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                if (_controller.text.isNotEmpty) {
+                  setState(() {
+                    _todos[_todos.indexOf(_filteredTodos[index])] = updatedText;
+                      _filteredTodos[index] = updatedText;
+                  });
+                  _saveTodos();
+                  _filterTodosWithBacktracking();
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Simpan'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Menutup dialog tanpa menyimpan
+              },
+              child: const Text('Batal'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  bool isMatch(String word, String pattern, int wIndex, int pIndex) {
+    if (pIndex == pattern.length) return true;
+    if (wIndex == word.length) return false;
+
+    if (word[wIndex].toLowerCase() == pattern[pIndex].toLowerCase()) {
+      if (isMatch(word, pattern, wIndex + 1, pIndex + 1)) return true;
+    }
+
+    return isMatch(word, pattern, wIndex + 1, pIndex);
+  }
+
+  List<String> searchByLettersBacktracking(List<String> todos, String pattern) {
+    List<String> results = [];
+    for (String todo in todos) {
+      if (isMatch(todo, pattern, 0, 0)) {
+        results.add(todo);
+      }
+    }
+    return results;
+  }
+
+  void _filterTodosWithBacktracking() {
+    final query = _searchController.text.trim().toLowerCase();
     setState(() {
       _filteredTodos.clear();
-      _filteredTodos.addAll(
-        _todos.where((todo) => todo.toLowerCase().contains(query)),
-      );
+      if (query.isEmpty) {
+        _filteredTodos.addAll(_todos);
+      } else {
+        _filteredTodos.addAll(searchByLettersBacktracking(_todos, query));
+      }
     });
   }
 
@@ -113,18 +174,22 @@ class _TodoHomePageState extends State<TodoHomePage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Search Bar
-            TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Cari Tugas...',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
-              ),
+            // Gunakan widget TodoSearchWidget
+            TodoSearchWidget(
+              searchController: _searchController,
+              onSearchChanged: (query) {
+                _filterTodosWithBacktracking();
+              },
             ),
             const SizedBox(height: 16),
-
-            // Input Tambah Tugas
+            // Gunakan widget TodoListWidget
+            TodoListWidget(
+              todos: _filteredTodos,
+              onDelete: (index) => _removeTodo(index),
+              onEdit: (index, oldText) => _editTodo(index, oldText), // Panggil editTodo
+            ),
+            const SizedBox(height: 16),
+            // Input tambah tugas
             Row(
               children: [
                 Expanded(
@@ -142,25 +207,6 @@ class _TodoHomePageState extends State<TodoHomePage> {
                   child: const Text('Tambah'),
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
-
-            // Daftar Tugas
-            Expanded(
-              child: ListView.builder(
-                itemCount: _filteredTodos.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(_filteredTodos[index]),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => _removeTodo(index),
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
           ],
         ),
