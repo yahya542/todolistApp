@@ -109,6 +109,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                 final updatedText = _controller.text; 
                 if (_controller.text.isNotEmpty) {
                   setState(() {
                     _todos[_todos.indexOf(_filteredTodos[index])] = updatedText;
