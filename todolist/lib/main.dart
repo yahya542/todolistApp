@@ -18,11 +18,12 @@ class TodoListApp extends StatelessWidget {
       title: 'Todo List',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        primarySwatch: Colors.blueGrey,
         textTheme: const TextTheme(
           titleLarge: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Colors.teal,
+            color: Colors.deepOrange,
           ),
           bodyMedium: TextStyle(fontSize: 18),
         ),
