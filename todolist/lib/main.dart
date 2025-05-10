@@ -170,7 +170,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Daftar Tugas')),
+      appBar: AppBar(title: const Text('To do list')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
