@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'component/backtrackingSearch.dart'; // Import widget pencarian
-import 'component/daftarTugas.dart';    // Impor widget daftar tugas
+import 'widgets/backtrackingSearch.dart'; // Import widget pencarian
+import 'widgets/daftarTugas.dart';    // Impor widget daftar tugas
 
 void main() {
   runApp(const TodoListApp());
@@ -15,18 +15,20 @@ class TodoListApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: Text  'Todo List',
+      title: 'Todo List', // Judul aplikasi (bukan widget Text)
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         primarySwatch: Colors.blueGrey,
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(
+        appBarTheme: const AppBarTheme(
+          centerTitle: true, // Mengatur title berada di tengah
+          backgroundColor: Colors.white, // Opsional: latar belakang AppBar
+          titleTextStyle: TextStyle(
+            color: Colors.orange,      // Warna teks title
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Colors.deepOrange,
-            fontFamily: 'Righteous',
+            fontFamily: 'Righteous',   // Pastikan font 'Righteous' sudah ditambahkan di pubspec.yaml
           ),
-          bodyMedium: TextStyle(fontSize: 18),
+          iconTheme: IconThemeData(color: Colors.orange),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
@@ -38,7 +40,8 @@ class TodoListApp extends StatelessWidget {
       home: const TodoHomePage(),
     );
   }
-}//tes
+}
+
 
 class TodoHomePage extends StatefulWidget {
   const TodoHomePage({super.key});
