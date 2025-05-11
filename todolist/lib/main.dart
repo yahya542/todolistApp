@@ -15,7 +15,7 @@ class TodoListApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Todo List',
+      title: Text  'Todo List',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         primarySwatch: Colors.blueGrey,
@@ -24,6 +24,7 @@ class TodoListApp extends StatelessWidget {
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.deepOrange,
+            fontFamily: 'Righteous',
           ),
           bodyMedium: TextStyle(fontSize: 18),
         ),
