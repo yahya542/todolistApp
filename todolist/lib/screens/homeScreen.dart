@@ -35,14 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Todo List'),
       ),
-      body: Padding(
+      body: Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFFF6F8FA), // 💡 Background lembut
+      ),
+      child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             TextField(
               controller: _controller,
               decoration: InputDecoration(
-                labelText: 'Tambah Tugas',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -96,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
