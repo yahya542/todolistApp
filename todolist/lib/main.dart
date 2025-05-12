@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Righteous',
         primarySwatch: Colors.teal,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       home: const SplashScreen(),
     );

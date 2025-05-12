@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/backtrackingSearch.dart';
 import '../widgets/daftarTugas.dart';
-import '../screens/settingScreen.dart';
-import '../screens/loginScreen.dart';
+import '../widgets/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -90,43 +89,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Todo List'),
-        backgroundColor: Colors.yellowAccent,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.yellowAccent,
-                image: DecorationImage(
-                  image: AssetImage('assets/images/avResponsive.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Text('Menu', style: TextStyle(fontSize: 24)),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/avHome.jpg'),
+              fit: BoxFit.cover,
+              alignment: Alignment.bottomCenter,
             ),
-            ListTile(
-              leading: const Icon(Icons.login),
-              title: const Text('Masuk'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingScreen(),
-                  ),
-                );
-              },
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            iconTheme: const IconThemeData(color: Colors.white),
+            elevation: 0,
+            title: const Text(
+              'Todo List',
+              style: TextStyle(color: Colors.white),
             ),
-          ],
+          ),
         ),
       ),
+      drawer: const DrawerWidget(),
+
       body: Container(
         decoration: const BoxDecoration(
           color: Colors.yellowAccent,
@@ -150,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: _controller,
                 decoration: const InputDecoration(
                   labelText: 'Tambah list',
+
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.note_add),
                 ),
