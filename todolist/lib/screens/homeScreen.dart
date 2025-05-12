@@ -99,7 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.yellowAccent),
+              decoration: BoxDecoration(
+                color: Colors.yellowAccent,
+                image: DecorationImage(
+                  image: AssetImage('assets/images/avResponsive.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: Text('Menu', style: TextStyle(fontSize: 24)),
             ),
             ListTile(
@@ -143,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               TextField(
                 controller: _controller,
                 decoration: const InputDecoration(
-                  labelText: 'Tambah Tugas',
+                  labelText: 'Tambah list',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.note_add),
                 ),
