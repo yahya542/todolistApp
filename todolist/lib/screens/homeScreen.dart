@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/backtrackingSearch.dart';
 import '../widgets/daftarTugas.dart';
+import '../screens/settingScreen.dart';
+import '../screens/loginScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,9 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _filteredTodos = List.from(_todos);
-    _searchController.addListener(() {
-      _filterTodosWithBacktracking();
-    });
+    _searchController.addListener(_filterTodosWithBacktracking);
   }
 
   void _addTodo() {
@@ -82,9 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _filterTodosWithBacktracking() {
     final query = _searchController.text.trim().toLowerCase();
     setState(() {
-      _filteredTodos = _todos.where((todo) {
-        return todo.toLowerCase().contains(query);
-      }).toList();
+      _filteredTodos =
+          _todos.where((todo) => todo.toLowerCase().contains(query)).toList();
     });
   }
 
@@ -95,9 +94,40 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Todo List'),
         backgroundColor: Colors.yellowAccent,
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.yellowAccent),
+              child: Text('Menu', style: TextStyle(fontSize: 24)),
+            ),
+            ListTile(
+              leading: const Icon(Icons.login),
+              title: const Text('Masuk'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           color: Colors.yellowAccent,
+          image: DecorationImage(
+            image: AssetImage('assets/images/avHome.jpg'),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -121,13 +151,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton(onPressed: _addTodo, child: const Text('+')),
               const SizedBox(height: 20),
               Expanded(
-                child: _filteredTodos.isEmpty
-                    ? const Center(child: Text('Belum ada tugas'))
-                    : TodoListWidget(
-                        todos: _filteredTodos,
-                        onDelete: _removeTodo,
-                        onEdit: _editTodo,
-                      ),
+                child:
+                    _filteredTodos.isEmpty
+                        ? const Center(child: Text('Belum ada tugas'))
+                        : TodoListWidget(
+                          todos: _filteredTodos,
+                          onDelete: _removeTodo,
+                          onEdit: _editTodo,
+                        ),
               ),
             ],
           ),
