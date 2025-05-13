@@ -16,11 +16,19 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<String> _filteredTodos = [];
 
+  bool isDark = true; 
+
   @override
   void initState() {
     super.initState();
     _filteredTodos = List.from(_todos);
     _searchController.addListener(_filterTodosWithBacktracking);
+  }
+
+  void _toggleTheme() {
+    setState(() {
+      isDark = !isDark;
+    });
   }
 
   void _addTodo() {
@@ -92,9 +100,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/avHome.jpg'),
+              image: AssetImage(
+                isDark
+                    ? 'assets/images/avHome.jpg'
+                    : 'assets/images/carsdark.jpg',
+              ),
               fit: BoxFit.cover,
               alignment: Alignment.bottomCenter,
             ),
@@ -107,16 +119,27 @@ class _HomeScreenState extends State<HomeScreen> {
               'Todo List',
               style: TextStyle(color: Colors.white),
             ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                  color: Colors.white,
+                ),
+                onPressed: _toggleTheme,
+              ),
+            ],
           ),
         ),
       ),
       drawer: const DrawerWidget(),
-
       body: Container(
-        decoration: const BoxDecoration(
-          color: Colors.yellowAccent,
+        decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/avHome.jpg'),
+            image: AssetImage(
+              isDark
+                  ? 'assets/images/avHome.jpg'
+                  : 'assets/images/carsdark.jpg',
+            ),
             fit: BoxFit.cover,
           ),
         ),
@@ -133,24 +156,33 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               TextField(
                 controller: _controller,
+                style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: 'Tambah list',
-
+                  labelStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.note_add),
+                  prefixIcon: Icon(Icons.note_add, color: Colors.white),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
                 ),
               ),
+              const SizedBox(height: 10),
               ElevatedButton(onPressed: _addTodo, child: const Text('+')),
               const SizedBox(height: 20),
               Expanded(
-                child:
-                    _filteredTodos.isEmpty
-                        ? const Center(child: Text('Belum ada tugas'))
-                        : TodoListWidget(
-                          todos: _filteredTodos,
-                          onDelete: _removeTodo,
-                          onEdit: _editTodo,
+                child: _filteredTodos.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Belum ada tugas',
+                          style: TextStyle(color: Colors.white),
                         ),
+                      )
+                    : TodoListWidget(
+                        todos: _filteredTodos,
+                        onDelete: _removeTodo,
+                        onEdit: _editTodo,
+                      ),
               ),
             ],
           ),
