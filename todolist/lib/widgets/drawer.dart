@@ -25,8 +25,8 @@ class DrawerWidget extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(
               isDark
-                  ? 'assets/images/avHome.jpg'
-                  : 'assets/images/transformer.jpg',
+                  ? 'assets/images/avResponsive.jpg'
+                  : 'assets/images/carsdark.jpg',
             ),
             fit: BoxFit.cover,
           ),
@@ -39,7 +39,7 @@ class DrawerWidget extends StatelessWidget {
               child: Text(
                 'Menu',
                 style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black,
+                  color: isDark ? Colors.white : Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -48,29 +48,19 @@ class DrawerWidget extends StatelessWidget {
             ...menuItems.map((item) {
               final title = item['title'];
               final icon = item['icon'];
-              final bgImage = getMenuItemBgImage(title, isDark);
+        
 
               return Container(
                 height: 70,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(bgImage),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(isDark ? 0.5 : 0.25),
-                      BlendMode.darken,
-                    ),
-                  ),
-                ),
                 child: ListTile(
                   leading: Icon(
                     icon,
-                    color: isDark ? Colors.white : Colors.black,
+                    color: isDark ? Colors.white : Colors.white,
                   ),
                   title: Text(
                     title,
                     style: TextStyle(
-                      color: isDark ? Colors.white : Colors.black,
+                      color: isDark ? Colors.white : Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -85,11 +75,11 @@ class DrawerWidget extends StatelessWidget {
             ListTile(
               leading: Icon(
                 Icons.brightness_6,
-                color: isDark ? Colors.white : Colors.black,
+                color: Colors.white
               ),
               title: Text(
                 'Ganti Tema',
-                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                style: TextStyle(color: Colors.white),
               ),
               onTap: onToggleTheme, // Memanggil fungsi untuk toggle tema
             ),
@@ -100,24 +90,5 @@ class DrawerWidget extends StatelessWidget {
   }
 
   /// Fungsi untuk mendapatkan gambar background berdasarkan nama menu dan tema
-  String getMenuItemBgImage(String title, bool isDark) {
-    switch (title) {
-      case 'Beranda':
-        return isDark
-            ? 'assets/images/avTop.jpeg'
-            : 'assets/images/menu/bg_beranda_light.jpg';
-      case 'Tugas':
-        return isDark
-            ? 'assets/images/avResponsive.jpg'
-            : 'assets/images/menu/bg_tugas_light.jpg';
-      case 'Pengaturan':
-        return isDark
-            ? 'assets/images/menu/bg_pengaturan_dark.jpg'
-            : 'assets/images/menu/bg_pengaturan_light.jpg';
-      default:
-        return isDark
-            ? 'assets/images/avHome.jpg'
-            : 'assets/images/transformer.jpg';
-    }
-  }
+  
 }

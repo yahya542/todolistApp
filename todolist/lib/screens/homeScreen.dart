@@ -105,10 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage(
                 isDark
                     ? 'assets/images/avHome.jpg'
-                    : 'assets/images/carsdark.jpg',
+                    :  'assets/images/light1.jpg',
               ),
               fit: BoxFit.cover,
-              alignment: Alignment.bottomCenter,
+              alignment: isDark? Alignment.bottomCenter : Alignment.topCenter,
             ),
           ),
           child: AppBar(
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
             image: AssetImage(
               isDark
                   ? 'assets/images/avHome.jpg'
-                  : 'assets/images/carsdark.jpg',
+                  : 'assets/images/light1.jpg',
             ),
             fit: BoxFit.cover,
           ),
