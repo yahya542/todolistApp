@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<String> _filteredTodos = [];
 
-  bool isDark = true; 
+  bool isDark = false;
 
   @override
   void initState() {
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      drawer: const DrawerWidget(),
+      drawer: DrawerWidget(isDark: isDark, onToggleTheme: _toggleTheme),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -171,18 +171,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton(onPressed: _addTodo, child: const Text('+')),
               const SizedBox(height: 20),
               Expanded(
-                child: _filteredTodos.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'Belum ada tugas',
-                          style: TextStyle(color: Colors.white),
+                child:
+                    _filteredTodos.isEmpty
+                        ? const Center(
+                          child: Text(
+                            'Belum ada tugas',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                        : TodoListWidget(
+                          todos: _filteredTodos,
+                          onDelete: _removeTodo,
+                          onEdit: _editTodo,
                         ),
-                      )
-                    : TodoListWidget(
-                        todos: _filteredTodos,
-                        onDelete: _removeTodo,
-                        onEdit: _editTodo,
-                      ),
               ),
             ],
           ),
