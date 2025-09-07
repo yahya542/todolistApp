@@ -18,12 +18,25 @@ class TodoSearchWidget extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: searchController,
+            style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               labelText: 'Cari Tugas...',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.search),
+              labelStyle: TextStyle(color: Colors.white), 
+              prefixIcon: Icon(Icons.search, color: Colors.white),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white,
+                  width: 2.0,
+                ), 
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white,
+                  width: 2.5,
+                ), 
+              ),
             ),
-            onChanged: onSearchChanged, // Menangani perubahan teks pencarian
+            onChanged: onSearchChanged, 
           ),
         ),
         const SizedBox(width: 8),
